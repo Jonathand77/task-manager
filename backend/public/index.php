@@ -7,7 +7,10 @@ use Slim\Routing\RouteCollectorProxy;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Services\AuthService;
+use App\Services\InputValidator;
 use App\Middleware\JwtMiddleware;
+use App\Middleware\RateLimitMiddleware;
+use App\Models\Task;
 
 // Load environment variables
 $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
@@ -15,6 +18,9 @@ $dotenv->load();
 
 // Create Slim app
 $app = AppFactory::create();
+
+// Add rate limiting middleware (100 requests per 60 seconds)
+$app->add(new RateLimitMiddleware(100, 60));
 
 // Add error middleware
 $app->addErrorMiddleware(true, true, true);
@@ -47,10 +53,34 @@ function sendJson(Response $response, $data, $status = 200) {
 
 // Register
 $app->post('/api/register', function (Request $request, Response $response) {
-    $data = json_decode($request->getBody(), true);
+    $bodyValidation = InputValidator::validateJsonBody((string)$request->getBody());
+    if (!$bodyValidation['valid']) {
+        return sendJson($response, ['error' => $bodyValidation['error']], 400);
+    }
 
-    if (!isset($data['email'], $data['password'], $data['name'])) {
-        return sendJson($response, ['error' => 'Missing required fields'], 400);
+    $data = $bodyValidation['data'];
+
+    // Validate required fields
+    $requiredCheck = InputValidator::validateRequiredFields($data, ['email', 'password', 'name']);
+    if (!$requiredCheck['valid']) {
+        return sendJson($response, ['error' => 'Missing required fields: ' . implode(', ', $requiredCheck['missing'])], 400);
+    }
+
+    // Validate email
+    if (!InputValidator::isValidEmail($data['email'])) {
+        return sendJson($response, ['error' => 'Invalid email format'], 400);
+    }
+
+    // Validate name
+    $nameValidation = InputValidator::validateName($data['name']);
+    if (!$nameValidation['valid']) {
+        return sendJson($response, ['error' => $nameValidation['error']], 400);
+    }
+
+    // Validate password strength
+    $passwordValidation = InputValidator::validatePassword($data['password']);
+    if (!$passwordValidation['valid']) {
+        return sendJson($response, ['errors' => $passwordValidation['errors']], 400);
     }
 
     $db = getDBConnection();
@@ -86,10 +116,17 @@ $app->post('/api/register', function (Request $request, Response $response) {
 
 // Login
 $app->post('/api/login', function (Request $request, Response $response) {
-    $data = json_decode($request->getBody(), true);
+    $bodyValidation = InputValidator::validateJsonBody((string)$request->getBody());
+    if (!$bodyValidation['valid']) {
+        return sendJson($response, ['error' => $bodyValidation['error']], 400);
+    }
 
-    if (!isset($data['email'], $data['password'])) {
-        return sendJson($response, ['error' => 'Missing email or password'], 400);
+    $data = $bodyValidation['data'];
+
+    // Validate required fields
+    $requiredCheck = InputValidator::validateRequiredFields($data, ['email', 'password']);
+    if (!$requiredCheck['valid']) {
+        return sendJson($response, ['error' => 'Missing required fields: ' . implode(', ', $requiredCheck['missing'])], 400);
     }
 
     $db = getDBConnection();
@@ -143,10 +180,8 @@ $app->group('/api/tasks', function (RouteCollectorProxy $group) {
         $db = getDBConnection();
 
         try {
-            $stmt = $db->prepare('SELECT id, title, description, status, created_at FROM tasks WHERE user_id = ? ORDER BY created_at DESC');
-            $stmt->execute([$user->user_id]);
-            $tasks = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
+            $taskModel = new Task($db);
+            $tasks = $taskModel->getByUserId($user->user_id);
             return sendJson($response, ['data' => $tasks]);
         } catch (\Exception $e) {
             error_log('Get Tasks Error: ' . $e->getMessage());
@@ -157,29 +192,68 @@ $app->group('/api/tasks', function (RouteCollectorProxy $group) {
     // Create task
     $group->post('', function (Request $request, Response $response) {
         $user = $request->getAttribute('user');
-        $data = json_decode($request->getBody(), true);
+        
+        $bodyValidation = InputValidator::validateJsonBody((string)$request->getBody());
+        if (!$bodyValidation['valid']) {
+            return sendJson($response, ['error' => $bodyValidation['error']], 400);
+        }
 
-        if (!isset($data['title'])) {
-            return sendJson($response, ['error' => 'Missing title'], 400);
+        $data = $bodyValidation['data'];
+
+        // Validate required fields
+        $requiredCheck = InputValidator::validateRequiredFields($data, ['title']);
+        if (!$requiredCheck['valid']) {
+            return sendJson($response, ['error' => 'Missing required fields: ' . implode(', ', $requiredCheck['missing'])], 400);
+        }
+
+        // Validate title
+        $titleValidation = InputValidator::validateTaskTitle($data['title']);
+        if (!$titleValidation['valid']) {
+            return sendJson($response, ['error' => $titleValidation['error']], 400);
+        }
+
+        // Validate description if provided
+        if (isset($data['description'])) {
+            $descValidation = InputValidator::validateTaskDescription($data['description']);
+            if (!$descValidation['valid']) {
+                return sendJson($response, ['error' => $descValidation['error']], 400);
+            }
+        }
+
+        // Validate status if provided
+        if (isset($data['status'])) {
+            $statusValidation = InputValidator::validateStatus($data['status'], Task::getValidStatuses());
+            if (!$statusValidation['valid']) {
+                return sendJson($response, ['error' => $statusValidation['error']], 400);
+            }
+        }
+
+        // Validate task data
+        $validation = Task::validate($data);
+        if (!$validation['valid']) {
+            return sendJson($response, ['errors' => $validation['errors']], 400);
         }
 
         $db = getDBConnection();
-
         try {
-            $status = $data['status'] ?? 'pending';
-            $description = $data['description'] ?? '';
+            $taskModel = new Task($db);
+            $taskId = $taskModel->create(
+                (int)$user->user_id,
+                $data['title'],
+                $data['description'] ?? '',
+                $data['status'] ?? Task::STATUS_PENDING
+            );
 
-            $stmt = $db->prepare('INSERT INTO tasks (user_id, title, description, status, created_at) VALUES (?, ?, ?, ?, NOW())');
-            $stmt->execute([$user->user_id, $data['title'], $description, $status]);
-
-            $taskId = $db->lastInsertId();
+            if ($taskId === false) {
+                return sendJson($response, ['error' => 'Failed to create task'], 500);
+            }
 
             return sendJson($response, [
-                'id' => (int)$taskId,
+                'id' => $taskId,
                 'title' => $data['title'],
-                'description' => $description,
-                'status' => $status,
-                'user_id' => $user->user_id
+                'description' => $data['description'] ?? '',
+                'status' => $data['status'] ?? Task::STATUS_PENDING,
+                'user_id' => (int)$user->user_id
             ], 201);
         } catch (\Exception $e) {
             error_log('Create Task Error: ' . $e->getMessage());
@@ -187,51 +261,136 @@ $app->group('/api/tasks', function (RouteCollectorProxy $group) {
         }
     });
 
-    // Update task
-    $group->put('/{id}', function (Request $request, Response $response, array $args) {
+    // Get task by ID
+    $group->get('/{id}', function (Request $request, Response $response, array $args) {
         $user = $request->getAttribute('user');
-        $taskId = (int)$args['id'];
-        $data = json_decode($request->getBody(), true);
+        
+        // Validate ID
+        if (!InputValidator::isValidId($args['id'])) {
+            return sendJson($response, ['error' => 'Invalid task ID'], 400);
+        }
 
+        $taskId = (int)$args['id'];
         $db = getDBConnection();
 
         try {
-            $stmt = $db->prepare('SELECT user_id FROM tasks WHERE id = ?');
-            $stmt->execute([$taskId]);
-            $task = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $taskModel = new Task($db);
+            $task = $taskModel->getById($taskId, (int)$user->user_id);
 
-            if (!$task || $task['user_id'] != $user->user_id) {
+            if (!$task) {
+                return sendJson($response, ['error' => 'Task not found'], 404);
+            }
+
+            return sendJson($response, $task);
+        } catch (\Exception $e) {
+            error_log('Get Task Error: ' . $e->getMessage());
+            return sendJson($response, ['error' => 'Failed to fetch task'], 500);
+        }
+    });
+
+    // Update task
+    $group->put('/{id}', function (Request $request, Response $response, array $args) {
+        $user = $request->getAttribute('user');
+        
+        // Validate ID
+        if (!InputValidator::isValidId($args['id'])) {
+            return sendJson($response, ['error' => 'Invalid task ID'], 400);
+        }
+
+        $bodyValidation = InputValidator::validateJsonBody((string)$request->getBody());
+        if (!$bodyValidation['valid']) {
+            return sendJson($response, ['error' => $bodyValidation['error']], 400);
+        }
+
+        $data = $bodyValidation['data'];
+        $taskId = (int)$args['id'];
+
+        // Validate title if provided
+        if (isset($data['title'])) {
+            $titleValidation = InputValidator::validateTaskTitle($data['title']);
+            if (!$titleValidation['valid']) {
+                return sendJson($response, ['error' => $titleValidation['error']], 400);
+            }
+        }
+
+        // Validate description if provided
+        if (isset($data['description'])) {
+            $descValidation = InputValidator::validateTaskDescription($data['description']);
+            if (!$descValidation['valid']) {
+                return sendJson($response, ['error' => $descValidation['error']], 400);
+            }
+        }
+
+        // Validate status if provided
+        if (isset($data['status'])) {
+            $statusValidation = InputValidator::validateStatus($data['status'], Task::getValidStatuses());
+            if (!$statusValidation['valid']) {
+                return sendJson($response, ['error' => $statusValidation['error']], 400);
+            }
+        }
+
+        $db = getDBConnection();
+        try {
+            $taskModel = new Task($db);
+            $success = $taskModel->update($taskId, (int)$user->user_id, $data);
+
+            if (!$success) {
                 return sendJson($response, ['error' => 'Task not found or unauthorized'], 403);
             }
-
-            $updates = [];
-            $params = [];
-
-            if (isset($data['title'])) {
-                $updates[] = 'title = ?';
-                $params[] = $data['title'];
-            }
-            if (isset($data['description'])) {
-                $updates[] = 'description = ?';
-                $params[] = $data['description'];
-            }
-            if (isset($data['status'])) {
-                $updates[] = 'status = ?';
-                $params[] = $data['status'];
-            }
-
-            if (empty($updates)) {
-                return sendJson($response, ['error' => 'No fields to update'], 400);
-            }
-
-            $params[] = $taskId;
-            $stmt = $db->prepare('UPDATE tasks SET ' . implode(', ', $updates) . ' WHERE id = ?');
-            $stmt->execute($params);
 
             return sendJson($response, ['success' => true]);
         } catch (\Exception $e) {
             error_log('Update Task Error: ' . $e->getMessage());
             return sendJson($response, ['error' => 'Failed to update task'], 500);
+        }
+    });
+
+    // Delete task
+    $group->delete('/{id}', function (Request $request, Response $response, array $args) {
+        $user = $request->getAttribute('user');
+        
+        // Validate ID
+        if (!InputValidator::isValidId($args['id'])) {
+            return sendJson($response, ['error' => 'Invalid task ID'], 400);
+        }
+
+        $taskId = (int)$args['id'];
+        $db = getDBConnection();
+
+        try {
+            $taskModel = new Task($db);
+            $success = $taskModel->delete($taskId, (int)$user->user_id);
+
+            if (!$success) {
+                return sendJson($response, ['error' => 'Task not found or unauthorized'], 403);
+            }
+
+            return sendJson($response, ['success' => true]);
+        } catch (\Exception $e) {
+            error_log('Delete Task Error: ' . $e->getMessage());
+            return sendJson($response, ['error' => 'Failed to delete task'], 500);
+        }
+    });
+
+    // Get tasks by status
+    $group->get('/filter/{status}', function (Request $request, Response $response, array $args) {
+        $user = $request->getAttribute('user');
+        $status = $args['status'];
+
+        // Validate status
+        $statusValidation = InputValidator::validateStatus($status, Task::getValidStatuses());
+        if (!$statusValidation['valid']) {
+            return sendJson($response, ['error' => $statusValidation['error']], 400);
+        }
+
+        $db = getDBConnection();
+        try {
+            $taskModel = new Task($db);
+            $tasks = $taskModel->getByStatus((int)$user->user_id, $status);
+            return sendJson($response, ['data' => $tasks]);
+        } catch (\Exception $e) {
+            error_log('Get Tasks By Status Error: ' . $e->getMessage());
+            return sendJson($response, ['error' => 'Failed to fetch tasks'], 500);
         }
     });
 })->add(new JwtMiddleware());

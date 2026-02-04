@@ -6,6 +6,8 @@ use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Services\AuthService;
+use App\Middleware\JwtMiddleware;
 
 // Load environment variables
 $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
@@ -34,57 +36,12 @@ function getDBConnection() {
 }
 
 // JWT helper functions
-function generateToken($userId) {
-    $key = $_ENV['JWT_SECRET'] ?? 'your-secret-key';
-    $payload = [
-        'iss' => 'task-manager',
-        'aud' => 'task-manager-api',
-        'iat' => time(),
-        'exp' => time() + (86400 * 7),
-        'user_id' => $userId
-    ];
-    return \Firebase\JWT\JWT::encode($payload, $key, 'HS256');
-}
-
-function verifyToken($token) {
-    try {
-        $key = $_ENV['JWT_SECRET'] ?? 'your-secret-key';
-        $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($key, 'HS256'));
-        return $decoded;
-    } catch (\Exception $e) {
-        error_log('Token Error: ' . $e->getMessage());
-        return null;
-    }
-}
+// JWT helpers are provided by App\Services\AuthService
 
 function sendJson(Response $response, $data, $status = 200) {
     $response->getBody()->write(json_encode($data));
     return $response->withStatus($status)->withHeader('Content-Type', 'application/json');
 }
-
-// JWT Middleware
-$jwtMiddleware = function (Request $request, \Closure $next) {
-    $authHeader = $request->getHeaderLine('Authorization');
-    if (empty($authHeader)) {
-        $response = new \Slim\Psr7\Response();
-        return sendJson($response, ['error' => 'Missing authorization token'], 401);
-    }
-
-    $parts = explode(' ', $authHeader);
-    if (count($parts) !== 2 || $parts[0] !== 'Bearer') {
-        $response = new \Slim\Psr7\Response();
-        return sendJson($response, ['error' => 'Invalid authorization header'], 401);
-    }
-
-    $decoded = verifyToken($parts[1]);
-    if (!$decoded) {
-        $response = new \Slim\Psr7\Response();
-        return sendJson($response, ['error' => 'Invalid or expired token'], 401);
-    }
-
-    $request = $request->withAttribute('user', $decoded);
-    return $next($request);
-};
 
 // Public Routes
 
@@ -108,12 +65,12 @@ $app->post('/api/register', function (Request $request, Response $response) {
             return sendJson($response, ['error' => 'Email already registered'], 409);
         }
 
-        $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
+        $passwordHash = AuthService::hashPassword($data['password']);
         $stmt = $db->prepare('INSERT INTO users (email, password_hash, name, created_at) VALUES (?, ?, ?, NOW())');
         $stmt->execute([$data['email'], $passwordHash, $data['name']]);
 
         $userId = $db->lastInsertId();
-        $token = generateToken($userId);
+        $token = AuthService::generateToken($userId);
 
         return sendJson($response, [
             'id' => (int)$userId,
@@ -145,11 +102,11 @@ $app->post('/api/login', function (Request $request, Response $response) {
         $stmt->execute([$data['email']]);
         $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if (!$user || !password_verify($data['password'], $user['password_hash'])) {
+        if (!$user || !AuthService::verifyPassword($data['password'], $user['password_hash'])) {
             return sendJson($response, ['error' => 'Invalid credentials'], 401);
         }
 
-        $token = generateToken($user['id']);
+        $token = AuthService::generateToken($user['id']);
 
         return sendJson($response, [
             'id' => (int)$user['id'],
@@ -277,6 +234,6 @@ $app->group('/api/tasks', function (RouteCollectorProxy $group) {
             return sendJson($response, ['error' => 'Failed to update task'], 500);
         }
     });
-})->add($jwtMiddleware);
+})->add(new JwtMiddleware());
 
 $app->run();

@@ -25,6 +25,20 @@ $app->add(new RateLimitMiddleware(100, 60));
 // Add error middleware
 $app->addErrorMiddleware(true, true, true);
 
+// CORS: respond to preflight and add CORS headers
+$app->options('/{routes:.+}', function (Request $request, Response $response) {
+    return $response;
+});
+
+$app->add(function (Request $request, $handler) {
+    $response = $handler->handle($request);
+    $origin = $_ENV['CORS_ORIGIN'] ?? '*';
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', $origin)
+        ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+});
+
 // Database connection helper
 function getDBConnection() {
     try {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import api from '../services/api'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { registerUser } from '../features/auth/authSlice'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -8,12 +9,17 @@ export default function Register() {
   const [name, setName] = useState('')
   const [error, setError] = useState(null)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await api.post('/api/register', { email, password, name })
-      navigate('/login')
+      const resultAction = await dispatch(registerUser({ email, password, name }))
+      if (registerUser.fulfilled.match(resultAction)) {
+        navigate('/tasks')
+      } else {
+        setError(resultAction.payload?.error || 'Registration failed')
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed')
     }

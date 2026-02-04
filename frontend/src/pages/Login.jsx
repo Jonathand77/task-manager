@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import api from '../services/api'
 import { useDispatch } from 'react-redux'
-import { setCredentials } from '../features/auth/authSlice'
+import { loginUser } from '../features/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -14,10 +14,12 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await api.post('/api/login', { email, password })
-      const { token, user } = res.data.data
-      dispatch(setCredentials({ token, user }))
-      navigate('/tasks')
+      const resultAction = await dispatch(loginUser({ email, password }))
+      if (loginUser.fulfilled.match(resultAction)) {
+        navigate('/tasks')
+      } else {
+        setError(resultAction.payload?.error || 'Login failed')
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed')
     }

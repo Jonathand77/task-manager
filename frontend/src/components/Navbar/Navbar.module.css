@@ -1,0 +1,143 @@
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 16px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 32px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo:hover {
+  opacity: 0.9;
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.userName {
+  color: white;
+  font-size: 14px;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.authLink {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+.registerLink {
+  background: white;
+  color: #667eea;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.registerLink:hover {
+  transform: translateY(-2px);
+}
+
+.logoutButton {
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.logoutButton:hover {
+  background: white;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 0;
+    margin-bottom: 20px;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .logo {
+    font-size: 20px;
+    gap: 6px;
+  }
+
+  .nav {
+    gap: 8px;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .navLink,
+  .authLink {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .registerLink,
+  .logoutButton {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 18px;
+  }
+
+  .navLink,
+  .authLink,
+  .registerLink,
+  .logoutButton {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}

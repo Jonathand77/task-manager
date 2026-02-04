@@ -1,9 +1,9 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import TasksList from './pages/TasksList'
-import ProtectedRoute from './components/ProtectedRoute'
+import Login from './pages/Login/Login'
+import Register from './pages/Register/Register'
+import TasksList from './pages/TasksList/TasksList'
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 
 function App() {
   return (

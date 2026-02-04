@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createTask, updateTask } from '../features/tasks/tasksSlice'
+import { createTask, updateTask } from '../../features/tasks/tasksSlice'
+import styles from './TaskForm.module.css'
 
 export default function TaskForm({ task, onClose }) {
   const [title, setTitle] = useState('')
@@ -57,40 +58,40 @@ export default function TaskForm({ task, onClose }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px', background: '#fff' }}>
-      <h3>{task ? 'Editar Tarea' : 'Nueva Tarea'}</h3>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <h3 className={styles.title}>{task ? 'Editar Tarea' : 'Nueva Tarea'}</h3>
       
-      {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+      {error && <div className={styles.error}>{error}</div>}
       
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Título *</label>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Título *</label>
         <input 
           type="text"
           value={title}
           onChange={e => setTitle(e.target.value)}
           placeholder="Título de la tarea"
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+          className={styles.input}
           required
         />
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Descripción</label>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Descripción</label>
         <textarea 
           value={description}
           onChange={e => setDescription(e.target.value)}
           placeholder="Descripción opcional"
           rows="4"
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+          className={styles.textarea}
         />
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Estado</label>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Estado</label>
         <select 
           value={status}
           onChange={e => setStatus(e.target.value)}
-          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+          className={styles.select}
         >
           <option value="pending">Pendiente</option>
           <option value="in_progress">En Progreso</option>
@@ -98,18 +99,11 @@ export default function TaskForm({ task, onClose }) {
         </select>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px' }}>
+      <div className={styles.actions}>
         <button 
           type="submit" 
           disabled={taskStatus === 'loading'}
-          style={{ 
-            padding: '10px 20px', 
-            background: '#2563eb', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '4px', 
-            cursor: 'pointer' 
-          }}
+          className={styles.submitButton}
         >
           {taskStatus === 'loading' ? 'Guardando...' : (task ? 'Actualizar' : 'Crear')}
         </button>
@@ -118,14 +112,7 @@ export default function TaskForm({ task, onClose }) {
           <button 
             type="button"
             onClick={onClose}
-            style={{ 
-              padding: '10px 20px', 
-              background: '#6b7280', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '4px', 
-              cursor: 'pointer' 
-            }}
+            className={styles.cancelButton}
           >
             Cancelar
           </button>

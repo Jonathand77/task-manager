@@ -1,0 +1,168 @@
+.container {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  margin: 0;
+}
+
+.newButton {
+  padding: 10px 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.newButton:hover {
+  transform: translateY(-2px);
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.filterButton:hover {
+  transform: translateY(-2px);
+}
+
+.filterAll {
+  background: #2563eb;
+  color: white;
+}
+
+.filterAllInactive {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.filterPending {
+  background: #f59e0b;
+  color: white;
+}
+
+.filterPendingInactive {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.filterInProgress {
+  background: #3b82f6;
+  color: white;
+}
+
+.filterInProgressInactive {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.filterDone {
+  background: #10b981;
+  color: white;
+}
+
+.filterDoneInactive {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.formContainer {
+  margin-bottom: 24px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  background: #f9fafb;
+  border-radius: 8px;
+  color: #6b7280;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+    margin: 16px auto;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .newButton {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .filters {
+    gap: 8px;
+  }
+
+  .filterButton {
+    flex: 1;
+    min-width: calc(50% - 4px);
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 8px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .newButton {
+    font-size: 14px;
+  }
+
+  .filterButton {
+    min-width: 100%;
+    font-size: 12px;
+  }
+
+  .loading,
+  .empty {
+    padding: 30px 20px;
+    font-size: 14px;
+  }
+}

@@ -4,6 +4,7 @@ import { loginUser } from '../../features/auth/authSlice'
 import { useNavigate, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Layout from '../../components/Layout/Layout'
+import logo from '../../assets/user-logo.svg'
 import styles from './Login.module.css'
 
 export default function Login() {
@@ -32,6 +33,7 @@ export default function Login() {
   return (
     <Layout>
       <div className={styles.authCard}>
+        <img src={logo} alt="Usuario" className={styles.logo} />
         <h2 className={styles.title}>Iniciar Sesión</h2>
         
         <form onSubmit={handleSubmit}>

@@ -17,8 +17,8 @@
 
 .newButton {
   padding: 10px 20px;
-  background: #2563eb;
-  color: white;
+  background: #1f4f5f;
+  color: #e9f1f3;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -51,13 +51,13 @@
 }
 
 .filterAll {
-  background: #2563eb;
-  color: white;
+  background: #1f4f5f;
+  color: #e9f1f3;
 }
 
 .filterAllInactive {
-  background: #f3f4f6;
-  color: #374151;
+  background: rgba(44, 97, 115, 0.12);
+  color: #1f4f5f;
 }
 
 .filterPending {
@@ -97,15 +97,15 @@
 .loading {
   text-align: center;
   padding: 40px;
-  color: #6b7280;
+  color: #1f4f5f;
 }
 
 .empty {
   text-align: center;
   padding: 40px;
-  background: #f9fafb;
+  background: rgba(44, 97, 115, 0.08);
   border-radius: 8px;
-  color: #6b7280;
+  color: #1f4f5f;
 }
 
 /* Responsive Design */
@@ -119,6 +119,7 @@
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
+    margin-bottom: 20px;
   }
 
   .title {
@@ -144,7 +145,12 @@
 
 @media (max-width: 480px) {
   .container {
-    padding: 0 8px;
+    padding: 0 10px;
+    margin: 12px auto;
+  }
+
+  .header {
+    margin-bottom: 16px;
   }
 
   .title {
@@ -153,11 +159,17 @@
 
   .newButton {
     font-size: 14px;
+    padding: 10px;
+  }
+
+  .filters {
+    gap: 6px;
   }
 
   .filterButton {
     min-width: 100%;
     font-size: 12px;
+    padding: 9px 10px;
   }
 
   .loading,

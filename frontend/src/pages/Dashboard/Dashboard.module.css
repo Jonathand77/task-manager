@@ -1,0 +1,323 @@
+.container {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin: 0 0 6px 0;
+  font-size: 24px;
+  color: #1f4f5f;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0;
+  color: #2c6173;
+  font-size: 14px;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpiCard {
+  background: white;
+  border: 1px solid rgba(44, 97, 115, 0.2);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(31, 79, 95, 0.08);
+}
+
+.kpiAccent {
+  background: linear-gradient(180deg, rgba(44, 97, 115, 0.12), rgba(44, 97, 115, 0.04));
+}
+
+.kpiLabel {
+  margin: 0 0 10px 0;
+  color: #2c6173;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.kpiValue {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f4f5f;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statusCard {
+  border-radius: 12px;
+  padding: 16px;
+  background: white;
+  border: 1px solid rgba(44, 97, 115, 0.2);
+  box-shadow: 0 8px 20px rgba(31, 79, 95, 0.08);
+}
+
+.statusPending {
+  background: #fff7ed;
+  border-color: #f59e0b;
+}
+
+.statusProgress {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.statusDone {
+  background: #ecfdf3;
+  border-color: #10b981;
+}
+
+.statusLabel {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1f4f5f;
+}
+
+.statusValue {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.statusBar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(15, 40, 48, 0.08);
+  overflow: hidden;
+}
+
+.pendingBar {
+  height: 100%;
+  background: #f59e0b;
+}
+
+.progressBar {
+  height: 100%;
+  background: #3b82f6;
+}
+
+.doneBar {
+  height: 100%;
+  background: #10b981;
+}
+
+.rateGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.rateCard {
+  background: white;
+  border: 1px dashed rgba(44, 97, 115, 0.3);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.rateChart {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rateInner {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(44, 97, 115, 0.15);
+}
+
+.rateValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f4f5f;
+}
+
+.rateLabel {
+  margin: 0;
+  color: #2c6173;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statusGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rateGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    margin: 16px auto;
+    padding: 0 12px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .kpiGrid {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .kpiCard {
+    padding: 12px;
+  }
+
+  .kpiLabel {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .kpiValue {
+    font-size: 20px;
+  }
+
+  .statusGrid {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .statusCard {
+    padding: 12px;
+  }
+
+  .statusLabel {
+    font-size: 11px;
+  }
+
+  .statusValue {
+    font-size: 18px;
+  }
+
+  .rateGrid {
+    gap: 12px;
+  }
+
+  .rateCard {
+    padding: 14px;
+  }
+
+  .rateChart {
+    width: 100px;
+    height: 100px;
+  }
+
+  .rateInner {
+    width: 72px;
+    height: 72px;
+  }
+
+  .rateValue {
+    font-size: 16px;
+  }
+
+  .rateLabel {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpiGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .rateGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .kpiGrid,
+  .statusGrid,
+  .rateGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpiValue,
+  .statusValue,
+  .rateValue {
+    font-size: 20px;
+  }
+
+  .rateChart {
+    width: 110px;
+    height: 110px;
+  }
+
+  .rateInner {
+    width: 78px;
+    height: 78px;
+  }
+}

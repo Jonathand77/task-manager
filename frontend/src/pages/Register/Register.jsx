@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerUser } from '../../features/auth/authSlice'
 import Layout from '../../components/Layout/Layout'
+import logo from '../../assets/user-logo.svg'
 import styles from './Register.module.css'
 
 export default function Register() {
@@ -32,6 +33,7 @@ export default function Register() {
   return (
     <Layout>
       <div className={styles.authCard}>
+        <img src={logo} alt="Usuario" className={styles.logo} />
         <h2 className={styles.title}>Crear Cuenta</h2>
         
         <form onSubmit={handleSubmit}>

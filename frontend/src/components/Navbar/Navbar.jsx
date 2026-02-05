@@ -2,6 +2,8 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../../features/auth/authSlice'
+import logoBodyTech from '../../assets/LogoBodyTech.png'
+import userLogo from '../../assets/user-logo.svg'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
@@ -19,7 +21,7 @@ export default function Navbar() {
     <nav className={styles.navbar}>
       <div className={styles.container}>
         <Link to="/" className={styles.logo}>
-          <span>✓</span>
+          <img src={logoBodyTech} alt="BodyTech" className={styles.brandLogo} />
           Task Manager
         </Link>
 
@@ -27,8 +29,12 @@ export default function Navbar() {
           {token ? (
             <>
               <span className={styles.userName}>
-                👤 {user?.name || user?.email}
+                <img src={userLogo} alt="Usuario" className={styles.userLogo} />
+                {user?.name || user?.email}
               </span>
+              <Link to="/dashboard" className={styles.navLink}>
+                Dashboard
+              </Link>
               <Link to="/tasks" className={styles.navLink}>
                 Mis Tareas
               </Link>

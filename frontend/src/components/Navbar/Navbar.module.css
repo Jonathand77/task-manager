@@ -1,5 +1,5 @@
 .navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(180deg, #2c6173 0%, #1f4f5f 100%);
   padding: 16px 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 32px;
@@ -22,6 +22,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  font-family: var(--brand-font);
+  letter-spacing: 0.02em;
+}
+
+.brandLogo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 
 .logo:hover {
@@ -37,6 +45,15 @@
 .userName {
   color: white;
   font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.userLogo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .navLink {
@@ -61,8 +78,8 @@
 }
 
 .registerLink {
-  background: white;
-  color: #667eea;
+  background: rgba(233, 241, 243, 0.9);
+  color: #1f4f5f;
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -75,8 +92,8 @@
 }
 
 .logoutButton {
-  background: rgba(255, 255, 255, 0.9);
-  color: #667eea;
+  background: rgba(233, 241, 243, 0.9);
+  color: #1f4f5f;
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -103,8 +120,13 @@
   }
 
   .logo {
-    font-size: 20px;
+    font-size: 18px;
     gap: 6px;
+  }
+
+  .brandLogo {
+    width: 40px;
+    height: 40px;
   }
 
   .nav {
@@ -129,8 +151,53 @@
 }
 
 @media (max-width: 480px) {
+  .navbar {
+    padding: 10px 0;
+    margin-bottom: 16px;
+  }
+
+  .container {
+    padding: 0 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .logo {
+    font-size: 16px;
+    gap: 4px;
+  }
+
+  .brandLogo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nav {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .navLink,
+  .authLink {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .registerLink,
+  .logoutButton {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
   .logo {
     font-size: 18px;
+  }
+
+  .brandLogo {
+    width: 24px;
+    height: 24px;
   }
 
   .navLink,

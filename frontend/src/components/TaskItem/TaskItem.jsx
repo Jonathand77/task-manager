@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { deleteTask } from '../../features/tasks/tasksSlice'
+import { useToast } from '../../contexts/ToastContext'
 import styles from './TaskItem.module.css'
 
 const statusBadges = {
@@ -12,10 +13,20 @@ const statusBadges = {
 export default function TaskItem({ task, onEdit }) {
   const dispatch = useDispatch()
   const badge = statusBadges[task.status] || statusBadges.pending
+  const { showSuccess, showError } = useToast()
 
   const handleDelete = async () => {
     if (window.confirm('¿Seguro que quieres eliminar esta tarea?')) {
-      await dispatch(deleteTask(task.id))
+      try {
+        const resultAction = await dispatch(deleteTask(task.id))
+        if (deleteTask.fulfilled.match(resultAction)) {
+          showSuccess('¡Tarea eliminada exitosamente!')
+        } else {
+          showError('Error al eliminar la tarea')
+        }
+      } catch (err) {
+        showError('Error al eliminar la tarea')
+      }
     }
   }
 

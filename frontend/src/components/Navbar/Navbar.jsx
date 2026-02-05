@@ -2,6 +2,8 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../../features/auth/authSlice'
+import { useToast } from '../../contexts/ToastContext'
+import WebSocketIndicator from '../WebSocketIndicator/WebSocketIndicator'
 import logoBodyTech from '../../assets/LogoBodyTech.png'
 import userLogo from '../../assets/user-logo.svg'
 import styles from './Navbar.module.css'
@@ -11,10 +13,16 @@ export default function Navbar() {
   const token = useSelector(state => state.user.token)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { showSuccess, showError } = useToast()
 
   const handleLogout = () => {
-    dispatch(logout())
-    navigate('/login')
+    try {
+      dispatch(logout())
+      showSuccess('¡Sesión cerrada exitosamente!')
+      setTimeout(() => navigate('/login'), 500)
+    } catch (err) {
+      showError('Error al cerrar sesión')
+    }
   }
 
   return (
@@ -28,6 +36,7 @@ export default function Navbar() {
         <div className={styles.nav}>
           {token ? (
             <>
+              <WebSocketIndicator />
               <span className={styles.userName}>
                 <img src={userLogo} alt="Usuario" className={styles.userLogo} />
                 {user?.name || user?.email}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createTask, updateTask } from '../../features/tasks/tasksSlice'
+import { useToast } from '../../contexts/ToastContext'
 import styles from './TaskForm.module.css'
 
 export default function TaskForm({ task, onClose }) {
@@ -10,6 +11,7 @@ export default function TaskForm({ task, onClose }) {
   const [error, setError] = useState(null)
   const dispatch = useDispatch()
   const taskStatus = useSelector(state => state.tasks.status)
+  const { showSuccess, showError, showWarning } = useToast()
 
   useEffect(() => {
     if (task) {
@@ -25,6 +27,7 @@ export default function TaskForm({ task, onClose }) {
 
     if (!title.trim()) {
       setError('El título es obligatorio')
+      showWarning('El título es obligatorio')
       return
     }
 
@@ -36,24 +39,32 @@ export default function TaskForm({ task, onClose }) {
           data: { title, description, status } 
         }))
         if (updateTask.fulfilled.match(resultAction)) {
+          showSuccess('¡Tarea actualizada exitosamente!')
           if (onClose) onClose()
         } else {
-          setError(resultAction.payload?.error || 'Error al actualizar tarea')
+          const errorMsg = resultAction.payload?.error || 'Error al actualizar tarea'
+          setError(errorMsg)
+          showError(errorMsg)
         }
       } else {
         // Create mode
         const resultAction = await dispatch(createTask({ title, description, status }))
         if (createTask.fulfilled.match(resultAction)) {
+          showSuccess('¡Tarea creada exitosamente!')
           setTitle('')
           setDescription('')
           setStatus('pending')
           if (onClose) onClose()
         } else {
-          setError(resultAction.payload?.error || 'Error al crear tarea')
+          const errorMsg = resultAction.payload?.error || 'Error al crear tarea'
+          setError(errorMsg)
+          showError(errorMsg)
         }
       }
     } catch (err) {
-      setError(err.message || 'Error inesperado')
+      const errorMsg = err.message || 'Error inesperado'
+      setError(errorMsg)
+      showError(errorMsg)
     }
   }
 

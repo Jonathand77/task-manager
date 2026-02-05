@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerUser } from '../../features/auth/authSlice'
 import Layout from '../../components/Layout/Layout'
+import { useToast } from '../../contexts/ToastContext'
 import logo from '../../assets/user-logo.svg'
 import styles from './Register.module.css'
 
@@ -14,19 +15,44 @@ export default function Register() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const authStatus = useSelector(state => state.auth.status)
+  const { showSuccess, showError, showWarning } = useToast()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+
+    // Validación de campos
+    if (!name.trim()) {
+      showWarning('El nombre es obligatorio')
+      return
+    }
+    if (!email.trim()) {
+      showWarning('El email es obligatorio')
+      return
+    }
+    if (!password.trim()) {
+      showWarning('La contraseña es obligatoria')
+      return
+    }
+    if (password.length < 8) {
+      showWarning('La contraseña debe tener al menos 8 caracteres')
+      return
+    }
+
     try {
       const resultAction = await dispatch(registerUser({ email, password, name }))
       if (registerUser.fulfilled.match(resultAction)) {
-        navigate('/tasks')
+        showSuccess('¡Cuenta creada exitosamente! Bienvenido')
+        setTimeout(() => navigate('/dashboard'), 500)
       } else {
-        setError(resultAction.payload?.error || 'Registration failed')
+        const errorMsg = resultAction.payload?.error || 'Error al crear la cuenta'
+        setError(errorMsg)
+        showError(errorMsg)
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed')
+      const errorMsg = err.response?.data?.message || 'Error al crear la cuenta'
+      setError(errorMsg)
+      showError(errorMsg)
     }
   }
 

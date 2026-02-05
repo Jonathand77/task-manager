@@ -4,6 +4,7 @@ import { loginUser } from '../../features/auth/authSlice'
 import { useNavigate, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Layout from '../../components/Layout/Layout'
+import { useToast } from '../../contexts/ToastContext'
 import logo from '../../assets/user-logo.svg'
 import styles from './Login.module.css'
 
@@ -14,19 +15,36 @@ export default function Login() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const authStatus = useSelector(state => state.auth.status)
+  const { showSuccess, showError, showWarning } = useToast()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+
+    // Validación de campos
+    if (!email.trim()) {
+      showWarning('El email es obligatorio')
+      return
+    }
+    if (!password.trim()) {
+      showWarning('La contraseña es obligatoria')
+      return
+    }
+
     try {
       const resultAction = await dispatch(loginUser({ email, password }))
       if (loginUser.fulfilled.match(resultAction)) {
-        navigate('/tasks')
+        showSuccess('¡Inicio de sesión exitoso! Bienvenido')
+        setTimeout(() => navigate('/dashboard'), 500)
       } else {
-        setError(resultAction.payload?.error || 'Login failed')
+        const errorMsg = resultAction.payload?.error || 'Error al iniciar sesión'
+        setError(errorMsg)
+        showError(errorMsg)
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed')
+      const errorMsg = err.response?.data?.message || 'Error al iniciar sesión'
+      setError(errorMsg)
+      showError(errorMsg)
     }
   }
 

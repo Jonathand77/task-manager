@@ -66,6 +66,50 @@ const tasksSlice = createSlice({
     clearTasks(state) {
       state.list = []
       state.error = null
+    },
+    // Reducers para sincronización WebSocket
+    addTask(state, action) {
+      const task = action.payload
+      // Evitar duplicados
+      if (!state.list.find(t => t.id === task.id)) {
+        state.list.unshift(task)
+        if (task.status === 'pending') state.count.pending++
+        else if (task.status === 'in_progress') state.count.in_progress++
+        else if (task.status === 'done') state.count.done++
+      }
+    },
+    updateTaskInState(state, action) {
+      const task = action.payload
+      const idx = state.list.findIndex(t => t.id === task.id)
+      if (idx !== -1) {
+        const oldStatus = state.list[idx].status
+        const newStatus = task.status || oldStatus
+        state.list[idx] = { ...state.list[idx], ...task }
+        
+        // Actualizar counts si el estado cambió
+        if (oldStatus !== newStatus) {
+          if (oldStatus === 'pending') state.count.pending--
+          else if (oldStatus === 'in_progress') state.count.in_progress--
+          else if (oldStatus === 'done') state.count.done--
+          
+          if (newStatus === 'pending') state.count.pending++
+          else if (newStatus === 'in_progress') state.count.in_progress++
+          else if (newStatus === 'done') state.count.done++
+        }
+      }
+    },
+    removeTask(state, action) {
+      const taskId = action.payload
+      const idx = state.list.findIndex(t => t.id === taskId)
+      if (idx !== -1) {
+        const status = state.list[idx].status
+        state.list.splice(idx, 1)
+        
+        // Actualizar counts
+        if (status === 'pending') state.count.pending--
+        else if (status === 'in_progress') state.count.in_progress--
+        else if (status === 'done') state.count.done--
+      }
     }
   },
   extraReducers: (builder) => {
@@ -161,5 +205,5 @@ const tasksSlice = createSlice({
   }
 })
 
-export const { setFilter, clearTasks } = tasksSlice.actions
+export const { setFilter, clearTasks, addTask, updateTaskInState, removeTask } = tasksSlice.actions
 export default tasksSlice.reducer

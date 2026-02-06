@@ -42,13 +42,16 @@ task-manager/
 │   ├── config/
 │   ├── database/
 │   ├── public/
-│   ├── routes/
+│   ├── tests/
+│   │   ├── integration/
+│   │   ├── unit/
 │   ├── vendor/
 │   ├── .env
 │   ├── .env.example
 │   ├── composer.json
 │   ├── composer.lock
 │   ├── Dockerfile
+│   ├── phpunit.xml
 │   ├── migrate.ps1
 │   └── README.md
 ```

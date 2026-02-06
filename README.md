@@ -1,4 +1,4 @@
-# **📘Aplicación Gestor de Tareas FullStack - Guía de la Solución y Manual de Usuario**
+# **📘Gestor de Tareas FullStack - Guía de la Solución y Manual de Usuario**
 
 ---
 
@@ -19,7 +19,7 @@
 
 | 👨‍💻 Nombre | 📧 Correo | 🏫 Link directo al repositorio | 🐙 Usuario GitHub |
 |---|---|---|---|
-| **Jonathan David Fernandez Vargas** | jonathanfdez62@gmail.com | [Link](https://github.com/Jonathand77/task-manager) | [jonathand77](https://github.com/jonathand77) |
+| **Jonathan David Fernandez Vargas** | jonathanfdez62@gmail.com | [LinkRepositorio](https://github.com/Jonathand77/task-manager) | [jonathand77](https://github.com/jonathand77) |
 
 **Desarrollo completo de la prueba técnica para el cargo de Desarrollador Full Stack - Gestor de tareas.**
 
@@ -58,7 +58,7 @@ task-manager/
 │   ├── config/
 │   ├── database/
 │   ├── public/
-│   ├── vendor/
+│   ├── tests/
 │   ├── .env.example
 │   ├── composer.json
 │   ├── Dockerfile
@@ -107,7 +107,7 @@ docker-compose ps
 - Migraciones se ejecutan solas
 - WebSockets
 
-![Base de Datos](assets/img/BaseDatos.png)
+![Levantamiento](assets/img/Ejecución.png)
 
 ### 3.3 Ejecutar el Frontend
 

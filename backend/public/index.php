@@ -409,4 +409,8 @@ $app->group('/api/tasks', function (RouteCollectorProxy $group) {
     });
 })->add(new JwtMiddleware());
 
-$app->run();
+if (PHP_SAPI !== 'cli' || (getenv('APP_ENV') ?? '') !== 'testing') {
+    $app->run();
+}
+
+return $app;

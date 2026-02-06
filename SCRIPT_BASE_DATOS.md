@@ -30,6 +30,8 @@ docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_d
 docker exec -it task-manager-postgres psql -U task_manager_user -d task_manager_db -c "\dt"
 ```
 
+![Verificar Tablas](assets/img/BaseDatos.png)
+
 ### 2. Reiniciar y ver Logs del Backend
 
 **Si se realizaron cambios en archivos del backend:**
@@ -95,6 +97,8 @@ docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_d
 docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_db -c "SELECT * FROM tasks ORDER BY created_at DESC LIMIT 50;"
 ```
 
+![Base de Datos](assets/img/BaseDatos.png)
+
 **Consultar Variables**
 
 ```bash
@@ -108,6 +112,8 @@ docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_d
 
 docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_db -c "SELECT COUNT(*) FROM tasks;"
 ```
+
+![Base de Datos](assets/img/BaseDatos.png)
 
 **Consola interactiva psql**
 
@@ -124,7 +130,7 @@ Host: localhost
 Port: 5432
 Database: task_manager_db
 User: task_manager_user
-Password: valor definido en Paso 1.2
+Password: valor definido en Paso 3.1
 ```
 
 **Las migraciones están incluidas en:**
@@ -132,7 +138,3 @@ Password: valor definido en Paso 1.2
 - [backend/database/migrations/002_create_tasks_table.sql](backend/database/migrations/002_create_tasks_table.sql)
 
 ## ✅ Proyecto finalizado con éxito y listo para evaluación técnica.
-
-Las migraciones están incluidas en:
-- [backend/database/migrations/001_create_users_table.sql](backend/database/migrations/001_create_users_table.sql)
-- [backend/database/migrations/002_create_tasks_table.sql](backend/database/migrations/002_create_tasks_table.sql)

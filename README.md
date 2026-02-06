@@ -26,9 +26,9 @@
 ---
 
 ## 1. 🔍 Introducción
-Esta guía documenta el desarrollo completo de la prueba técnica para el cargo de Desarrollador Full Stack, incluyendo la solución implementada (backend en PHP (Phalcon PHP) y frontend en React + Vite), los pasos de implementación, arquitectura, y el manual de usuario para el funcionamiento de la aplicación.
 El Gestor de Tareas Fullstack es una aplicación web diseñada para permitir a los usuarios registrarse, autenticarse y gestionar sus tareas personales de forma segura y eficiente. El proyecto implementa una arquitectura fullstack moderna, separando claramente responsabilidades entre backend, frontend y base de datos, e integrando buenas prácticas de seguridad, escalabilidad y mantenibilidad.
-La solución fue desarrollada utilizando PHP con Phalcon para el backend, React + Vite + Redux Toolkit para el frontend y PostgreSQL como motor de base de datos, todo orquestado mediante Docker.
+Esta guía documenta el desarrollo completo de la prueba técnica para el cargo de Desarrollador Full Stack, incluyendo los pasos de implementación, arquitectura, y el manual de usuario para el funcionamiento de la aplicación.
+La solución implementada que fué desarrollada utilizando backend en PHP (Phalcon PHP), frontend en React + Vite, PostgreSQL como motor de base de datos, Websockets y tests (PHPUnit) todo orquestado mediante Docker.
 
 ## 2. ⚙️ Requisitos Previos
 - Antes de comenzar, asegúrate de contar con:
@@ -83,9 +83,9 @@ task-manager/
 En la raíz del repositorio, crea o revisa el archivo `.env.example`
 
 **⚠ ️ Nota:** El proyecto utiliza múltiples archivos .env según la capa.
-Para levantar el proyecto con Docker, solo es obligatorio crear el archivo .env en la raíz a partir de .env.example siguiente.
-Los .env de backend/ y frontend/ son opcionales y solo se usan en ejecuciones locales sin Docker y que concuerden con cada .env.example.
-Puedes ejecutar: 
+Para levantar el proyecto con Docker, solo es obligatorio crear el archivo .env en la raíz a partir de `.env.example` siguiente.
+Los `.env` de `backend/` y `frontend/` son opcionales y solo se usan en ejecuciones locales sin Docker y que concuerden con cada `.env.example`
+Puedes ejecutar en la raíz del proyecto: 
 
 ```bash
 cp .env.example .env
@@ -147,6 +147,10 @@ Entidades principales:
 - **Validación** centralizada en servicios
 - **Separación REST + WebSocket** para tiempo real
 
+### 4.6 Tests (PHPUnit)
+- **Unitarios**: [backend/tests/Unit](backend/tests/Unit)
+- **Integración (auth/tasks)**: [backend/tests/Integration](backend/tests/Integration)
+
 ## 5. 🚀 Frontend - React + Vite
 ### 5.1 Autenticación en frontend
 - Login y registro con formulario
@@ -157,42 +161,46 @@ Entidades principales:
 ### 5.2 Componentes clave
 - **LoginPage**: autenticación
 
-![Diagrama Backend](assets/img/Login.png)
+![LoginPage](assets/img/Login.png)
 
 - **RegisterPage**: Registro
 
-![Diagrama Backend](assets/img/Login.png)
+![RegisterPage](assets/img/Register.png)
 
 - **DashboardPage**: Gestion de tareas del usuario
 
-![Diagrama Backend](assets/img/Dashboard.png)
+![DashboardPage](assets/img/Dashboard.png)
 
 - **TaskPage**: listar y gestionar tareas
 
-![Diagrama Backend](assets/img/GestionTarjetas.png)
+![TaskPage](assets/img/Task.png)
 
 ## 6. Pruebas manuales (En mi caso use Postman)
 - **Registrar usuario**: POST `/api/auth/register`
 ```bash
 { "name": "Pepito123",
   "email": "pepito@gmail.com",
-  "password": "P@ssw0rd!" }
+  "password": "P@ssw0rd!"
+}
 ```
 - **Login**: POST `/api/auth/login`
 ```bash
 { "email": "pepito@gmail.com",
-  "password": "P@ssw0rd!" }
+  "password": "P@ssw0rd!" 
+  }
 ```
 - **Crear tarea**: POST `/api/tasks`
 ```bash
 { "title": "Mi primera tarea",
   "description": "Descripción opcional",
-  "status": "pending" }
+  "status": "pending" 
+  }
 ```
 - **Actualizar tarea**: PUT `/api/tasks/{id}`
 ```bash
 { "title": "Título actualizado",
-  "status": "in_progress" }
+  "status": "in_progress" 
+  }
 ```
 - **Eliminar tarea**: DELETE `/api/tasks/{id}`
 

@@ -30,7 +30,7 @@ docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_d
 docker exec -it task-manager-postgres psql -U task_manager_user -d task_manager_db -c "\dt"
 ```
 
-![Verificar Tablas](assets/img/BaseDatos.png)
+![Verificar Tablas](assets/img/VerificarTablas.png)
 
 ### 2. Reiniciar y ver Logs del Backend
 
@@ -63,6 +63,8 @@ Invoke-RestMethod -Uri http://localhost:8000/api/health -Method GET
 
 **Respuesta esperada:**
 {"status":"healthy"}
+
+![HealthBackend](assets/img/HealthBackend.png)
 
 **Registro de Usuario desde consola (API)**
 
@@ -97,7 +99,8 @@ docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_d
 docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_db -c "SELECT * FROM tasks ORDER BY created_at DESC LIMIT 50;"
 ```
 
-![Base de Datos](assets/img/BaseDatos.png)
+![Usuarios](assets/img/Usuarios.png)
+![Tareas](assets/img/Tareas.png)
 
 **Consultar Variables**
 
@@ -113,7 +116,7 @@ docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_d
 docker exec -i task-manager-postgres psql -U task_manager_user -d task_manager_db -c "SELECT COUNT(*) FROM tasks;"
 ```
 
-![Base de Datos](assets/img/BaseDatos.png)
+![Base de Datos](assets/img/Count.png)
 
 **Consola interactiva psql**
 

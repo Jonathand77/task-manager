@@ -1,178 +1,207 @@
-# 📋 Task Manager - Aplicación Full Stack
-
-Mini gestor de tareas donde usuarios pueden registrarse, crear, listar y actualizar sus tareas.
-
-## 🏗️ Arquitectura
-
-```
-task-manager/
-├── backend/              API REST con Phalcon PHP
-├── frontend/             Aplicación React con Redux
-├── docker-compose.yml    Orquestación de servicios
-└── .env.example          Variables de entorno
-```
-
-## 🛠️ Tecnologías
-
-### Backend
-- **Framework**: Phalcon PHP
-- **Base de Datos**: PostgreSQL
-- **Autenticación**: JWT (JSON Web Tokens)
-- **Validaciones**: Phalcon Validators
-
-### Frontend
-- **Framework**: React 18+
-- **Estado Global**: Redux Toolkit
-- **HTTP Client**: Axios
-- **Build Tool**: Vite
-
-### DevOps
-- **Contenedorización**: Docker & Docker Compose
-
-## 📋 Requisitos Previos
-
-- Docker y Docker Compose instalados
-- Node.js 18+ (para desarrollo local)
-- PHP 8.1+ (para desarrollo local del backend)
-- PostgreSQL 15+ (si ejecutas sin Docker)
-
-## 🚀 Instalación Rápida con Docker
-
-### 1. Clonar repositorio
-```bash
-git clone https://github.com/tu-usuario/task-manager.git
-cd task-manager
-```
-
-### 2. Configurar variables de entorno
-```bash
-cp .env.example .env
-# Editar .env con tus valores
-```
-
-### 3. Ejecutar con Docker Compose
-```bash
-docker-compose up -d
-```
-
-### 4. Acceder a la aplicación
-- **Frontend**: http://localhost:5173
-- **API**: http://localhost:8000/api
-
-## 📚 API Endpoints
-
-### Autenticación
-- `POST /api/register` - Registrar nuevo usuario
-- `POST /api/login` - Iniciar sesión (retorna JWT)
-
-### Tareas (Requieren autenticación)
-- `GET /api/tasks` - Listar tareas del usuario
-- `POST /api/tasks` - Crear nueva tarea
-- `PUT /api/tasks/{id}` - Actualizar tarea
-
-## 🔐 Autenticación
-
-Los endpoints de tareas requieren:
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
-## 📦 Estructura del Backend
-
-```
-backend/
-├── app/
-│   ├── controllers/      Controladores de lógica
-│   ├── models/           Modelos de datos
-│   ├── services/         Servicios de negocio
-│   ├── middleware/       Middleware de autenticación
-│   └── validators/       Validaciones personalizadas
-├── config/               Configuración
-├── database/
-│   └── migrations/       Migraciones de BD
-├── routes/               Definición de rutas
-└── public/               Punto de entrada
-```
-
-## 📦 Estructura del Frontend
-
-```
-frontend/
-├── src/
-│   ├── components/       Componentes reutilizables
-│   ├── pages/            Páginas principales
-│   ├── store/            Redux store (slices)
-│   ├── services/         Servicios API
-│   ├── hooks/            Custom hooks
-│   ├── styles/           Estilos globales
-│   └── App.jsx           Componente raíz
-└── public/               Archivos estáticos
-```
-
-## 🧪 Testing (Extras)
-
-### Backend - PHPUnit
-```bash
-cd backend
-./vendor/bin/phpunit
-```
-
-### Frontend - Jest
-```bash
-cd frontend
-npm test
-```
-
-## 📝 Funcionalidades
-
-### Autenticación
-- ✅ Registro de usuarios
-- ✅ Login con JWT
-- ✅ Hash seguro de contraseñas (bcrypt)
-- ✅ Validación de tokens
-
-### Gestor de Tareas
-- ✅ Crear tareas con título y descripción
-- ✅ Listar tareas del usuario autenticado
-- ✅ Actualizar estado (pending, in_progress, done)
-- ✅ Filtrar tareas por estado
-- ✅ Validaciones de entrada
-
-### UI/UX
-- ✅ Formularios con validación
-- ✅ Feedback visual (loading, errores)
-- ✅ Diseño responsivo
-- ✅ Notificaciones de estado
-
-## 🚀 Extras Implementados
-
-- 🐳 Docker y Docker Compose
-- ✅ Migraciones de BD
-- 🧪 Tests unitarios
-- ⚡ WebSockets para notificaciones (opcional)
-
-## 📖 Documentación
-
-Ver carpetas respectivas:
-- [Backend Docs](./backend/README.md)
-- [Frontend Docs](./frontend/README.md)
-
-## 🤝 Contribuir
-
-1. Fork el proyecto
-2. Crear rama feature (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a rama (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la licencia MIT.
-
-## 👤 Autor
-
-Tu nombre - [GitHub](https://github.com/tu-usuario)
+# **📘Aplicación Gestor de Tareas FullStack - Guía de la Solución y Manual de Usuario**
 
 ---
 
-**¡Feliz desarrollo! 🎉**
+## 🛠️ Stack tecnologico y Arquitectura
+
+![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![Architecture](https://img.shields.io/badge/Architecture-Layered-blue)
+![Real-time](https://img.shields.io/badge/Real--time-WebSocket-green)
+![API](https://img.shields.io/badge/API-REST-brightgreen)
+![Code Quality](https://img.shields.io/badge/Code%20Quality-PSR--4-success)
+![GitHub repo size](https://img.shields.io/github/repo-size/Jonathand77/task-manager)
+![GitHub contributors](https://img.shields.io/github/contributors/Jonathand77/task-manager)
+![GitHub last commit](https://img.shields.io/github/last-commit/Jonathand77/task-manager)
+![Languages](https://img.shields.io/github/languages/count/Jonathand77/task-manager)
+
+## 👤 Autor
+
+| 👨‍💻 Nombre | 📧 Correo | 🏫 Link directo al repositorio | 🐙 Usuario GitHub |
+|---|---|---|---|
+| **Jonathan David Fernandez Vargas** | jonathanfdez62@gmail.com | [Link](https://github.com/Jonathand77/task-manager) | [jonathand77](https://github.com/jonathand77) |
+
+**Desarrollo completo de la prueba técnica para el cargo de Desarrollador Full Stack - Gestor de tareas.**
+
+---
+
+## 1. 🔍 Introducción
+Esta guía documenta el desarrollo completo de la prueba técnica para el cargo de Desarrollador Full Stack, incluyendo la solución implementada (backend en PHP (Phalcon PHP) y frontend en React + Vite), los pasos de implementación, arquitectura, y el manual de usuario para el funcionamiento de la aplicación.
+El Gestor de Tareas Fullstack es una aplicación web diseñada para permitir a los usuarios registrarse, autenticarse y gestionar sus tareas personales de forma segura y eficiente. El proyecto implementa una arquitectura fullstack moderna, separando claramente responsabilidades entre backend, frontend y base de datos, e integrando buenas prácticas de seguridad, escalabilidad y mantenibilidad.
+La solución fue desarrollada utilizando PHP con Phalcon para el backend, React + Vite + Redux Toolkit para el frontend y PostgreSQL como motor de base de datos, todo orquestado mediante Docker.
+
+## 2. ⚙️ Requisitos Previos
+- Antes de comenzar, asegúrate de contar con:
+- Docker Desktop (corriendo)
+- Docker Compose (incluido en Docker Desktop)
+- Node.js 18+ y npm
+- Git
+- **Nota**: Los archivos más importantes de este repositorio cuentan con sus comentarios para su más fácil interpretación.
+
+## 📦 Estructura del Proyecto
+
+```
+task-manager/
+├──  RAÍZ
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── .git/
+│   ├── .github/
+│   ├── docker-compose.yml
+│   ├── README.md
+│   ├── QUICKSTART_PROYECT.md
+│
+├── BACKEND/
+|   ├── README.md (Dentro del README.md se encuentra la estructura del Backend)
+│   ├── app/
+│   ├── bin/
+│   ├── config/
+│   ├── database/
+│   ├── public/
+│   ├── vendor/
+│   ├── .env.example
+│   ├── composer.json
+│   ├── Dockerfile
+│
+└── 💻 FRONTEND/
+    ├── README.md (Dentro del README.md se encuentra la estructura del Frontend)
+    ├── src/
+    ├── .env.example
+    ├── package.json
+    ├── package-lock.json
+    ├── Dockerfile
+    ├── vite.config.js
+    ├── index.html
+    └── node_modules/
+```
+
+---
+
+## 3. 🖥️ Guía Paso a Paso para Levantar el Proyecto
+### 3.1 Preparar Variables de Entorno
+
+En la raíz del repositorio, crea o revisa el archivo `.env.example`
+
+**⚠ ️ Nota:** El proyecto utiliza múltiples archivos .env según la capa.
+Para levantar el proyecto con Docker, solo es obligatorio crear el archivo .env en la raíz a partir de .env.example siguiente.
+Los .env de backend/ y frontend/ son opcionales y solo se usan en ejecuciones locales sin Docker y que concuerden con cada .env.example.
+Puedes ejecutar: 
+
+```bash
+cp .env.example .env
+```
+### 3.2 Levantar Servicios con Docker
+
+Desde la raíz del proyecto, ejecutar:
+
+```bash
+docker-compose up -d --build
+docker-compose ps
+```
+
+**Esto levantará automáticamente:**
+- PostgreSQL
+- Backend (Phalcon PHP)
+- Frontend
+- Infraestructura base del proyecto
+- Migraciones se ejecutan solas
+- WebSockets
+
+![Base de Datos](assets/img/BaseDatos.png)
+
+### 3.3 Ejecutar el Frontend
+
+Desde el host (no Docker):
+
+```bash
+npm --prefix frontend install
+npm --prefix frontend run dev -- --port 5174
+```
+
+**Ya puedes abrir en el navegador y utilizar la aplicación:**
+http://localhost:5174/
+
+---
+
+## 4. 🖥️ Backend – API con Phalcon PHP
+### 4.1 Modelos (Domain Layer)
+Entidades principales:
+- **User**: id, name, email, password_hash, created_at
+- **Task**: id, user_id, title, description, status, created_at, updated_at
+
+### 4.2 Autenticación JWT
+- Endpoints: `/api/auth/register`, `/api/auth/login`
+- El backend emite un JWT al autenticarse
+- En el frontend se guarda el token y se envía en `Authorization: Bearer <token>`
+- Middleware protege rutas privadas
+
+### 4.3 Endpoints del proyecto
+- **Auth**: POST `/api/auth/register`, POST `/api/auth/login`
+- **Tasks**: GET `/api/tasks`, POST `/api/tasks`, PUT `/api/tasks/{id}`, DELETE `/api/tasks/{id}`
+- **Tasks por estado**: GET `/api/tasks/filter/{status}`
+
+### 4.5 Buenas Prácticas y Arquitectura
+- **Arquitectura en capas (Layered/MVC)**: Controllers → Services → Models
+- **PSR-4** en autoload y nombres de carpetas
+- **JWT Middleware** para rutas privadas
+- **Validación** centralizada en servicios
+- **Separación REST + WebSocket** para tiempo real
+
+## 5. 🚀 Frontend - React + Vite
+### 5.1 Autenticación en frontend
+- Login y registro con formulario
+- JWT guardado
+- Axios agrega `Authorization: Bearer <token>` en cada request
+- Manejo global de 401/403: limpia sesión y redirige a `/login`
+
+### 5.2 Componentes clave
+- **LoginPage**: autenticación
+
+![Diagrama Backend](assets/img/Login.png)
+
+- **RegisterPage**: Registro
+
+![Diagrama Backend](assets/img/Login.png)
+
+- **DashboardPage**: Gestion de tareas del usuario
+
+![Diagrama Backend](assets/img/Dashboard.png)
+
+- **TaskPage**: listar y gestionar tareas
+
+![Diagrama Backend](assets/img/GestionTarjetas.png)
+
+## 6. Pruebas manuales (En mi caso use Postman)
+- **Registrar usuario**: POST `/api/auth/register`
+```bash
+{ "name": "Pepito123",
+  "email": "pepito@gmail.com",
+  "password": "P@ssw0rd!" }
+```
+- **Login**: POST `/api/auth/login`
+```bash
+{ "email": "pepito@gmail.com",
+  "password": "P@ssw0rd!" }
+```
+- **Crear tarea**: POST `/api/tasks`
+```bash
+{ "title": "Mi primera tarea",
+  "description": "Descripción opcional",
+  "status": "pending" }
+```
+- **Actualizar tarea**: PUT `/api/tasks/{id}`
+```bash
+{ "title": "Título actualizado",
+  "status": "in_progress" }
+```
+- **Eliminar tarea**: DELETE `/api/tasks/{id}`
+
+## 7. 🌐 Seguridad
+- JWT para autenticación y autorización
+- Variables sensibles en `.env.example` (no versionadas)
+- Middleware protege rutas privadas
+- Sanitización y validación en servicios
+- WebSocket autenticado con token
+
+---
+## **Fin de la guía y manual de usuario.**
